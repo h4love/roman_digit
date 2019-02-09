@@ -46,10 +46,95 @@ int roman_rank (char symbol)
 	return rank;
 }
 
+int roman_cost (char symbol)
+{
+	int cost = 0;
+	switch (symbol){
+	case 'M':
+	case 'C':
+	case 'X':
+	case 'I':
+		cost = 1;
+		break;
+	case 'D':
+	case 'L':
+	case 'V':
+		cost = 5;
+		break;
+	}
+	
+	return cost;
+}
+
+int pow10 (int grade){
+	int sum = 1;
+	for (int i = 1; i < grade; i++){
+		sum *= 10;
+	}
+	
+	return sum;
+}
+
 //0 - good, 1 - error
 int arabic (char* input, int* output)
 {
+	int roman_rank (char);
+	int roman_cost (char);
+	int pow10 (int);
 	
+	int steps = 0;x
+	int sum = 0, temp = 0;
+	int i = -1, err = -1;
+	
+	do {
+		i++;
+		if (err != -1){
+			//Summation
+			if (roman_rank(input[i]) > err){
+				temp *= -1;
+			} else {
+				sum += temp;
+				temp = 0;
+			}
+			//Repeat check
+			if (input[i] != input[i-1]){
+				steps = 0;
+			}
+			//Other laps
+			err = roman_rank(input[i]);
+		} else {
+			//First lap
+			err = roman_rank(input[i]);
+		}
+		//Leave after summation
+		if (input[i] == 0){
+			break;
+		}
+		//Intermediate summation
+		if (err != 0){
+			temp += roman_cost(input[i])*pow10(roman_rank(input[i]));
+			steps++;
+		} else {
+			return 1;
+		}
+		
+		//When D,L,V more than one
+		if ((roman_cost(input[i]) == 5) && (steps > 1)){
+			return 2;
+		}
+		//When M,C,X,I more than three
+		if ((roman_cost(input[i]) == 1) && (steps > 3)){
+			return 3;
+		}
+		
+		/* DEBUG */
+		//printf("(%d) SUM: %d, TEMP: %d, RANK: %d, COST: %d\n", i, sum, temp, roman_rank(input[i]), roman_cost(input[i]));
+		/* DEBUG */ 
+	} while (input[i] != 0);
+	
+	*output = sum;
+	
+	return 0;
 }
 
 //0 - good, 1 - error
@@ -122,6 +207,9 @@ int roman (int input, char* output)
 
 int main()
 {
+	int roman (int, char*);
+	int arabic (char*, int*);
+	
 	/* -- special variables -- */
 	//
 	/* temp */	char err = -1;
@@ -184,9 +272,9 @@ int main()
 		
 		err = arabic(input_r, &output_a);
 		if (err == 0) {
-			printf("[<] Arabic: %s", output_r);
+			printf("[<] Arabic: %d", output_a);
 		} else {
-			printf("[!] Convertation error, check syntax");
+			printf("[!] Convertation error, check syntax", err);
 		}
 		
 		break;
