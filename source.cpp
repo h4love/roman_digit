@@ -82,28 +82,32 @@ int arabic(char* input, int* output)
     int roman_rank(char);
     int roman_cost(char);
     int pow10(int);
-
+	
     int steps = 0;
-    x int sum = 0, temp = 0;
+    int sum = 0, temp = 0;
     int i = -1, err = -1;
 
     do {
         i++;
         if (err != -1) {
-            //Summation
-            if (roman_rank(input[i]) > err) {
-                temp *= -1;
-            }
-            else {
-                sum += temp;
-                temp = 0;
-            }
-            //Repeat check
-            if (input[i] != input[i - 1]) {
-                steps = 0;
-            }
-            //Other laps
-            err = roman_rank(input[i]);
+			if (roman_rank(input[i]) - err < 2){
+				//Summation
+				if (roman_rank(input[i]) > err) {
+					temp *= -1;
+				}
+				else {
+					sum += temp;
+					temp = 0;
+				}
+				//Repeat check
+				if (input[i] != input[i - 1]) {
+					steps = 0;
+				}
+				//Other laps
+				err = roman_rank(input[i]);
+			} else {
+				return 4;
+			}
         }
         else {
             //First lap
@@ -283,7 +287,7 @@ int main()
             printf("[<] Arabic: %d", output_a);
         }
         else {
-            printf("[!] Convertation error, check syntax", err);
+            printf("[!] Convertation error, check syntax");
         }
 
         break;
